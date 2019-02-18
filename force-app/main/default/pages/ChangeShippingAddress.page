@@ -1,0 +1,33 @@
+<apex:page standardController="Account" extensions="ShippingAddressController" standardStylesheets="false" showHeader="false" >
+    <apex:stylesheet value="{!URLFOR($Resource.css, 'styles/salesforce-lightning-design-system.css')}"/>
+    <style>
+        html{background-color:white;}
+    </style>
+    
+    <script>
+    function reload(){
+        window.top.location='/{!id}'
+        }
+    </script>
+   
+    <apex:form style="background-color:white;">
+        <apex:selectList value="{!selectAddr}"
+                         multiselect="false"
+                         size="1"
+                         style="width:70%"  styleClass="slds-select">
+            <apex:selectOptions value="{!address}"></apex:selectOptions>
+        </apex:selectList>
+        <apex:commandButton value="Use"
+                            action="{!changeAddress}"            
+                            style="width:15%; margin-left:5%"
+                            styleClass="slds-button slds-button_success"
+                            reRender="all"
+                            oncomplete="reload()"
+                            />  <br /> <br />
+        <label>Shipping Account: </label><apex:outputLabel >{!shippToAccount}</apex:outputLabel><br />
+        <label>Shipping Contact: </label><apex:outputLabel >{!shippToContact}</apex:outputLabel><br />
+        <label>Shipping Address: </label><apex:outputLabel >{!shippToAddress}</apex:outputLabel><br />
+      
+    </apex:form> 
+    
+</apex:page>
