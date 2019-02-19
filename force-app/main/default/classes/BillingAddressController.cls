@@ -76,11 +76,11 @@ public with sharing class BillingAddressController {
         Account chosenAccount = addressToAccountMap.get(getSelectAddr());
         List<Order> orders = [SELECT Id, BillingAddress, BillToContactId
                               FROM Order
-                              WHERE AccountId = :account.Id];
+                              WHERE AccountId = :account.Id AND (Status = 'Draft' OR Status = 'Activated')];
         Account acc = [SELECT Billing_Contact__c FROM Account WHERE Id = :chosenAccount.Id];
         account.Billing_Account__c = chosenAccount.Id;
         Address billingAddress = chosenAccount.BillingAddress;
-        
+        if(orders.size() > 0){
         for(Order order_i : orders){     
             order_i.BillingStreet = billingAddress.getStreet();
             order_i.BillingPostalCode = billingAddress.getPostalCode();
@@ -95,6 +95,7 @@ public with sharing class BillingAddressController {
 			else{order_i.BillToContactId = acc.Billing_Contact__c;}
         }
         update orders;
+        }
         if(account.Id != chosenAccount.Id) {account.Billing_Account__c = chosenAccount.Id;}
         else {account.Billing_Account__c = null;}
         update account;

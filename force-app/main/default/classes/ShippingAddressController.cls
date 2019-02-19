@@ -76,10 +76,11 @@ public with sharing class ShippingAddressController {
         Account chosenAccount = addressToAccountMap.get(getSelectAddr());
         List<Order> orders = [SELECT Id, ShippingAddress
                              FROM Order
-                             WHERE AccountId = :account.Id];
+                             WHERE AccountId = :account.Id AND (Status = 'Draft' OR Status = 'Activated')];
         Account acc = [SELECT Shipping_Contact__c FROM Account WHERE Id = :chosenAccount.Id];
         account.Shipping_Account__c = chosenAccount.Id;
         Address shippingAddress = chosenAccount.ShippingAddress;
+        if(orders.size() > 0){
         for(Order order_i : orders){
       	  order_i.ShippingStreet = shippingAddress.getStreet();
        	  order_i.ShippingPostalCode = shippingAddress.getPostalCode();
@@ -94,6 +95,7 @@ public with sharing class ShippingAddressController {
 		  else{order_i.ShipToContactId = acc.Shipping_Contact__c;}
         }
         update orders;
+        }
         if(account.Id != chosenAccount.Id) {account.Shipping_Account__c = chosenAccount.Id;}
         else {account.Shipping_Account__c = null;}
         update account;
